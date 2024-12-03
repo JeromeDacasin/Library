@@ -25,7 +25,8 @@ class UserController extends Controller
         $user = $this->userApi->login($request);
 
         return response()->json([
-            'status' => 200,
+            'status'  => 200,
+            'data'    => $user,
             'message' => 'Success'
         ],200)->withCookie($user['cookie']);
     }

@@ -34,7 +34,7 @@ class UserService
 
     public function login($request)
     {
-        $user = $this->user::where('username', $request->username)->first();
+        $user = $this->user::with('role')->where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages(['message' => 'Invalid Credentials']);
@@ -47,7 +47,9 @@ class UserService
         
         return [
             'token' => $token,
-            'cookie' => $cookie
+            'cookie' => $cookie,
+            'role'   => $user->role->name
+            
         ];
         
     }

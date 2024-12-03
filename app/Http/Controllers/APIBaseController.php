@@ -20,9 +20,9 @@ class APIBaseController extends Controller implements APIInterface
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->api->index();
+        $data = $this->api->index($request);
        
         return  new $this->collection($data);
     }
@@ -64,7 +64,7 @@ class APIBaseController extends Controller implements APIInterface
             return response()->json([
                 'data'    => new $this->resource($data),
                 'status'  => 200,
-                'message' => 'ok'
+                'message' => 'Successfully Updated'
             ], 200);
         } catch(ModelNotFoundException $e) {
             return response()

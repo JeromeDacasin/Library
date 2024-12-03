@@ -11,9 +11,9 @@ class DepartmentService
         
     }
 
-    public function index()
+    public function index($request)
     {
-        return $this->department::paginate(10);
+        return $request->paginate ? $this->department::paginate(10) : $this->department->get();   
     }
 
     public function store($request)

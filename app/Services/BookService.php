@@ -11,14 +11,14 @@ class BookService
         
     }
 
-    public function index()
+    public function index($request)
     {
         return $this->book::paginate(10);
     }
 
     public function store($request)
     {
-        return $this->book::create($request->all());
+        return $this->book::create($request->except(['author', 'department']));
     }
 
     public function show($id)
@@ -37,7 +37,7 @@ class BookService
     {
         $book = $this->show($id);
         
-        $book->update($request->all());
+        $book->update($request->except(['author', 'department']));
         
         return $book;
     }

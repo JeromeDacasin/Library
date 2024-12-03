@@ -14,6 +14,19 @@ class BookCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+       return $this->collection->map( fn($book) =>
+            [
+                'id'     => $book->id,
+                'name'   => $book->name,
+                'author' => $book->author->first_name . ' ' . $book->author->last_name,
+                'price'  => $book->price,
+                'edition'    => $book->edition,
+                'quantity'   => $book->quantity,
+                'department' => $book->department->name,
+                'status'     => $book->status
+
+            ]
+       )->all();
+          
     }
 }

@@ -27,9 +27,9 @@ Route::group(['prefix' => '/v1'], function() {
         Route::apiResource('/users', UserController::class);
         Route::apiResource('/roles', RoleController::class);
         Route::apiResource('/authors', AuthorController::class);
+        Route::apiResource('/books', BookController::class);
         Route::post('/logout',  [UserController::class, 'logout']);
     });
-    Route::apiResource('/books', BookController::class);
     
     Route::post('/login',  [UserController::class, 'login']);
 });

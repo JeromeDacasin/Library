@@ -2,7 +2,15 @@
 
 namespace App\Models;
 
-class Role extends BaseModel
+use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Model;
+
+class Role extends Model
 {
     protected $fillable = ['name', 'description'];
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
 }

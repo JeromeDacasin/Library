@@ -11,9 +11,9 @@ class AuthorService
         
     }
 
-    public function index()
+    public function index($request)
     {
-        return $this->author::paginate(10);
+        return $request->paginate ? $this->author::paginate(10) : $this->author->get();   
     }
 
     public function store($request)

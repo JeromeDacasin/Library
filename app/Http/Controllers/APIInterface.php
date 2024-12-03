@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 interface APIInterface 
 {
-    public function index();
+    public function index(Request $request);
 
     public function show(string $id);
 
