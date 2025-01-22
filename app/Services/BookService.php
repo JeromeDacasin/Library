@@ -13,6 +13,10 @@ class BookService
 
     public function index($request)
     {
+        if ($request->search) {
+            return $this->book::where('name', 'LIKE', '%' .$request->search .'%')->paginate();
+        }
+
         return $this->book::paginate(10);
     }
 

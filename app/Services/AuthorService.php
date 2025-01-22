@@ -13,6 +13,10 @@ class AuthorService
 
     public function index($request)
     {
+        if ($request->search) {
+            return $this->author::whereAny(['first_name', 'last_name'], 'LIKE', '%' . $request->search .'%')->paginate(10);
+        }
+
         return $request->paginate ? $this->author::paginate(10) : $this->author->get();   
     }
 

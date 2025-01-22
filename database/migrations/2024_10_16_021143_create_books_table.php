@@ -13,16 +13,22 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->string('edition');
             $table->float('price');
-            $table->integer('quantity');
-            $table->boolean('status')->default(1);
+            $table->integer('total_quantity');
+            $table->integer('remaining');
+            $table->string('acquired_via');
+            $table->boolean('is_active')->default(1);
             $table->foreignId('author_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->foreignId('department_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('publisher_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

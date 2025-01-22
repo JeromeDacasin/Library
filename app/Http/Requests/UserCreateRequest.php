@@ -24,7 +24,7 @@ class UserCreateRequest extends FormRequest
         return [
             'first_name' => 'required|string',
             'last_name'  => 'required|string',
-            'email'      => 'required|unique:users,email|regex:/^[A-Za-zñÑ0-9.-_]+@[A-Za-z0-9._-]+\.[A-Za-z]+$/',
+            'email'      => 'required|unique:user_informations,email|regex:/^[A-Za-zñÑ0-9.-_]+@[A-Za-z0-9._-]+\.[A-Za-z]+$/',
             'birth_date' => 'required|date',
             'role_id'    => 'required|int|exists:roles,id',
         ];

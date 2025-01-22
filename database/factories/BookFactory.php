@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Author;
 use App\Models\Department;
+use App\Models\Publisher;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,13 +20,16 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'       => fake()->sentence(3),
-            'edition'    => fake()->text(100),
-            'price'      => fake()->randomFloat(2, 100, 20000),
-            'quantity'   => fake()->numberBetween(5, 77),
-            'status'     => true,
-            'author_id'  => Author::inRandomOrder()->first(),
-            'department_id'  => Department::inRandomOrder()->first(),
+            'title'       => fake()->sentence(3),
+            'edition'     => fake()->text(100),
+            'price'       => fake()->randomFloat(2, 100, 20000),
+            'total_quantity'    => fake()->numberBetween(20, 77),
+            'remaining'         => fake()->numberBetween(0, 19),
+            'acquired_via'      => 'Donations',
+            'is_active'         => true,
+            'author_id'         => Author::inRandomOrder()->first(),
+            'department_id'     => Department::inRandomOrder()->first(),
+            'publisher_id'      => Publisher::inRandomOrder()->first(),
 
         ];
     }

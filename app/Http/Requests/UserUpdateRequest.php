@@ -24,7 +24,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'first_name' => 'required|string',
             'last_name'  => 'required|string',
-            'email'      => 'required|regex:/^[A-Za-zñÑ0-9.-_]+@[A-Za-z0-9._-]+\.[A-Za-z]+$/|unique:users,email,' . $this->user,
+            'email'      => 'required|regex:/^[A-Za-zñÑ0-9.-_]+@[A-Za-z0-9._-]+\.[A-Za-z]+$/|unique:user_informations,email,' . $this->user,
             'birth_date' => 'required|date',
             'role_id'    => 'required|int|exists:roles,id'
         ];

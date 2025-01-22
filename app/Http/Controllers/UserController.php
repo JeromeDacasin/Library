@@ -12,6 +12,7 @@ use App\Services\UserService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -33,16 +34,20 @@ class UserController extends Controller
 
     public function store(UserCreateRequest $request)
     {
+        DB::beginTransaction();
         try {
             $data = $this->userApi->store($request);
 
+            DB::commit();
             return response()->json([
                 'data' => $data,
                 'status' => 200,
                 'message' => 'successfully created'
             ], 200);
+            
 
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => $e->getMessage(),
                 'status'  => $e->getCode()
@@ -50,9 +55,10 @@ class UserController extends Controller
         }    
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userApi->index();
+
+        $users = $this->userApi->index($request);
 
         return new UserCollection($users);
     }
@@ -116,7 +122,7 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        $user = $this->userApi->logout($request);
+        $this->userApi->logout($request);
 
         return response()->json([
             'message' => 'Logout',

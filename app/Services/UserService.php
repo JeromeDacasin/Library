@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserInformation;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -11,7 +13,7 @@ use function App\Helpers\roles;
 
 class UserService
 {
-    public function __construct(protected User $user)
+    public function __construct(protected User $user, protected UserInformation $userInformation)
     {
         
     }
@@ -21,10 +23,28 @@ class UserService
         $username = $this->generateUsername($request);
         $this->checkForExistingUserName($username);
         $password = $this->generatePassword();
-        
-        $request->merge(['username' => $username, 'password' => $password->hashedPassword]);
 
-        $this->user::create($request->all());
+        $user = $this->user::create([
+            'username' => $username,
+            'password' => $password->hashedPassword,
+            'role_id'  => $request->role_id
+        ]); 
+
+
+        if (!$user) {
+            throw new Exception('Something went Wrong', 400);
+        }
+ 
+        $this->userInformation::create([
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'birth_date' => $request->birth_date,
+            'gender'     => $request->gender,
+            'email'      => $request->email,
+            'contact_number' => $request->contact_number,
+            'student_number' => $request->role_id === 2 ? ($request->student_number ?? $username) : null,
+            'user_id'        => $user->id
+        ]);
 
         return [
             'userName' => $username,
@@ -59,7 +79,7 @@ class UserService
         $username = $this->user::where('username', $username)->first();
 
         if ($username) {
-            throw new Exception("Username already existed");
+            throw new Exception("Username already existed", 409);
         }
 
         return true;
@@ -72,10 +92,10 @@ class UserService
         $username = '';
 
         $roles = roles($request->role_id);
-
+        
         if (stristr($roles, 'student')) {
             $username = now()->format('y') . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
-
+        
             return $username;
         }
 
@@ -95,9 +115,9 @@ class UserService
         ];
     }
 
-    public function index()
+    public function index($request)
     {
-        return $this->user::all();
+        return $this->user::where('role_id', $request->role_id)->paginate(10);
     }
 
     public function show($id)
@@ -107,9 +127,13 @@ class UserService
 
     public function update($request, $id)
     {
+
         $user = $this->show($id);
-        
-       return $user->update($request->all());
+
+        $data = $request->except(['username','role','is_active','role_id']);
+
+        return $this->userInformation::where('user_id', $user->id)
+            ->update($data);
     }
 
     public function destroy($id)

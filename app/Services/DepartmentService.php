@@ -13,6 +13,10 @@ class DepartmentService
 
     public function index($request)
     {
+        if ($request->search) {
+            return $this->department::where('name', 'LIKE', '%' .$request->search .'%')->paginate(10);
+        }
+
         return $request->paginate ? $this->department::paginate(10) : $this->department->get();   
     }
 

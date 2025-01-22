@@ -48,9 +48,8 @@ class RoleController extends Controller
             $role = $this->roleApi->show($id);
 
             return response()->json([
-                'data' => new RoleResource($role),
+                'data' => $role,
                 'status' => 200,
-                'message' => 'Successfully Update'
             ], 200);
 
         } catch (ModelNotFoundException $e) {
