@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -53,5 +55,13 @@ class User extends Authenticatable
     public function userInformation()
     {
         return $this->hasOne(UserInformation::class);
+    }
+
+    public function scopeSearch($query, $search) : Builder
+    {
+        return $query->whereHas('userInformation', function ($builder) use ($search) {
+            $builder->whereAny(['first_name', 'last_name', 'student_number'], 'LIKE', "{$search}%");
+        });
+        
     }
 }

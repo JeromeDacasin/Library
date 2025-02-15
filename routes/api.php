@@ -32,8 +32,11 @@ Route::group(['prefix' => '/v1'], function() {
         Route::apiResource('/books', BookController::class);
         Route::apiResource('/publishers', PublisherController::class);
         Route::apiResource('/penalties', PenaltyController::class);
-        Route::post('/logout',  [UserController::class, 'logout']);
         Route::apiResource('/request-books', BorrowedBookController::class);
+        Route::get('/my-books', [BorrowedBookController::class, 'myBooks']);
+        Route::post('/logout',  [UserController::class, 'logout']);
+        Route::put('user/password', [UserController::class, 'changePassword']);
+
     });
     Route::post('/login',  [UserController::class, 'login']);
 });

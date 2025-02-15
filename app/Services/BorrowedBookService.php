@@ -2,16 +2,24 @@
 
 namespace App\Services;
 
+use App\Models\Book;
 use App\Models\BorrowedBook;
 use App\Models\Penalty;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BorrowedBookService 
 {
-    public function __construct(protected BorrowedBook $borrowedBook, protected User $user, protected Penalty $penalty)
+    public function __construct(
+        protected BorrowedBook $borrowedBook, 
+        protected User $user, 
+        protected Penalty $penalty,
+        protected Book $book
+    )
     {
         
     }
@@ -19,7 +27,24 @@ class BorrowedBookService
 
     public function store($request) 
     {
-        $this->borrowedBook::create($request->all());
+        $book = $this->book::find($request->book_id);
+
+        $this->checkBook($book);
+
+        $id = Auth::user()->id;
+        
+        $request->merge([
+            'request_date' => now(),
+            'user_id'      => $id
+        ]);
+
+        $newRequestBook = $this->borrowedBook::create($request->all());
+
+        if ($newRequestBook) {
+            $this->updateBook($book);
+        }
+        
+
     }
 
     public function update($request, $id)
@@ -29,13 +54,15 @@ class BorrowedBookService
 
         if (stristr($request->status, 'borrowed')) {
             $request = $this->borrowBook($request);
-          }
+        }
 
         if (stristr($request->status, 'returned')) {
             $request = $this->returnBook($request, $borrowedBooks);
         }
         
-        return $borrowedBooks->update($request->all());
+        $borrowedBooks->update($request->all());
+
+        return $borrowedBooks;
     }
 
 
@@ -46,10 +73,28 @@ class BorrowedBookService
 
     public function index($request)
     {
+
+        $borrowBooks = $this->borrowedBook->query();
+        $search = $request->search;
+        
         if ($request->status) {
-            return $this->borrowedBook::where('status', $request->status)->paginate(10);
+            
+            if ($request->status === 'returned') {
+                $borrowedBooks = $borrowBooks->where(function($query) {
+                    $query->whereNot('status', 'requested')
+                    ->whereNot('status', 'borrowed');
+                }); 
+            } else {
+                $borrowedBooks = $borrowBooks->where('status', $request->status);
+            }
+            
         }
-        return $this->borrowedBook::paginate(10);
+
+        if ($request->search) {
+            $borrowBooks = $borrowBooks->search($search);
+        }
+
+        return $borrowedBooks->paginate(10);
     }
 
     public function delete($id)
@@ -133,6 +178,47 @@ class BorrowedBookService
 
         return $request;
         
+    }
+
+    public function myBooks()
+    {
+        $userId = Auth::user()->id;
+
+        $histories = DB::table('borrowed_books as bb')
+            ->join('books as b', 'b.id', 'bb.book_id')
+            ->join('users as u', 'u.id', 'bb.user_id')
+            ->where('bb.user_id', $userId)
+            ->select(
+                'b.title',
+                'bb.status',
+                'bb.must_return_date',
+                'bb.returned_date',
+                'bb.request_date'
+            )
+            ->orderBy('bb.status')
+            ->get();
+
+        return response()->json($histories);
+
+    }
+
+    private function checkBook($book) 
+    {
+    
+        $zero = 0;
+
+        if ($book->remaining === $zero || $book->is_active === $zero)
+        {
+            throw new Exception('Book is Not available right now', 422);
+        } 
+
+    }
+
+    private function updateBook($book) 
+    {
+        $book->update([
+            'remaining' => $book->remaining - 1
+        ]);
     }
 
     

@@ -9,6 +9,7 @@ use App\Http\Resources\RoleResource;
 use App\Services\RoleService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
@@ -35,9 +36,9 @@ class RoleController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $roles = $this->roleApi->index();
+        $roles = $this->roleApi->index($request);
 
         return new RoleCollection($roles);
     }

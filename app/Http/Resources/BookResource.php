@@ -16,13 +16,15 @@ class BookResource extends JsonResource
     {
         return [
             'id'     => $this->id,
-            'name'   => $this->name,
+            'title'  => $this->title,
             'price'  => $this->price,
-            'edition'    => $this->edition,
-            'quantity'   => $this->quantity,
-            'status'     => $this->status,
-            'author_id'  => $this->author_id,
-            'department_id' => $this->department_id
+            'edition'          => $this->edition,
+            'total_quantity'   => $this->total_quantity,
+            'remaining'        => $this->remaining,
+            'acquired_via'     => $this->acquired_via,
+            'is_active'        => $this->is_active,
+            'author_id'        => $this->author_id,
+            'department_id'    => $this->department_id
         ];
     }
 }

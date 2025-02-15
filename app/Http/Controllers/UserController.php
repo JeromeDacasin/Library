@@ -129,5 +129,24 @@ class UserController extends Controller
             'status'  => 200
         ]);
     }
+
+    public function changePassword(Request $request)
+    {
+        try {
+
+            $this->userApi->updatePassword($request);
+
+            return response()->json([
+                'status'  => 200,
+                'message' => 'Successful Change Password'
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status'  => $e->getCode()
+            ],$e->getCode());
+        }
+    }
  
 }

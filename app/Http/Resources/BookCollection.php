@@ -17,13 +17,15 @@ class BookCollection extends ResourceCollection
        return $this->collection->map( fn($book) =>
             [
                 'id'     => $book->id,
-                'name'   => $book->name,
+                'title'  => $book->title,
                 'author' => $book->author->first_name . ' ' . $book->author->last_name,
                 'price'  => $book->price,
-                'edition'    => $book->edition,
-                'quantity'   => $book->quantity,
-                'department' => $book->department->name,
-                'status'     => $book->status
+                'edition'          => $book->edition,
+                'total_quantity'   => $book->total_quantity,
+                'remaining'        => $book->remaining,
+                'acquired_via'     => $book->acquired_via,
+                'department'       => $book->department->name,
+                'is_active'        => $book->is_active
 
             ]
        )->all();

@@ -17,7 +17,8 @@ class PenaltyResource extends JsonResource
         return [
             'id'   => $this->id,
             'fine' => $this->fine,
-            'role' => $this->role->name
+            'role' => $this->role->name,
+            'role_id' => $this->role_id
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\UserInformation;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -68,7 +69,8 @@ class UserService
         return [
             'token' => $token,
             'cookie' => $cookie,
-            'role'   => $user->role->name
+            'role'   => $user->role->name,
+            'full_name' => ucwords($user->userInformation->first_name . ' ' . $user->userInformation->last_name)
             
         ];
         
@@ -117,7 +119,18 @@ class UserService
 
     public function index($request)
     {
-        return $this->user::where('role_id', $request->role_id)->paginate(10);
+        $user = $this->user->query();
+
+        $user = $user->where('role_id', $request->role_id);
+        
+        $search  = $request->search;
+        if ($request->search) {
+            $user = $user->search($search);
+        }
+
+        return $request->paginate ? $user->paginate(10) : $user->get();   
+
+   
     }
 
     public function show($id)
@@ -146,6 +159,30 @@ class UserService
     public function logout($request)
     {
       return $request->user()->currentAccessToken()->delete();
+    }
+
+    public function updatePassword($request) 
+    {
+        $auth = Auth::user();
+
+        if (!Hash::check($request->current, $auth->password)) {
+            throw new Exception('Current Password is Incorrect', 422);
+        }
+
+        if (strcmp($request->current, $request->new) === 0) {
+          
+            throw new Exception('New Password cannot be same as your current password.', 422);
+        }
+
+        $user = $this->user::find($auth->id);
+
+        $user->password = Hash::make($request->new);
+
+        $user = $user->save();
+
+        return $user;
+
+        
     }
 
 

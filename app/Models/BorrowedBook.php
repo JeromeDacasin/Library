@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,20 @@ class BorrowedBook extends Model
     public function book()
     {
         return $this->belongsTo(Book::class);
+    }
+
+    public function scopeSearch($query, $search) : Builder
+    {
+        return $query->where(function ($builder) use ($search) {
+           
+            $builder->orWhereHas('book', function($builder) use ($search) {
+                $builder->where('title', 'LIKE', "%{$search}%");
+            });
+            
+            $builder->orWhereHas('user.userInformation', function ($query) use ($search) {
+                $query->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%");
+            });
+        });
     }
 }

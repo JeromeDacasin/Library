@@ -16,9 +16,13 @@ class RoleService
         return $this->role::create($request->all());
     }
 
-    public function index()
+    public function index($request)
     {
-        return $this->role::paginate(10);
+        if ($request->search) {
+            return $this->role::where('name', 'LIKE', '%' .$request->search .'%')->paginate(10);
+        }
+
+        return $request->paginate ? $this->role::paginate(10) : $this->role->get();   
     }
 
     public function show($id)
