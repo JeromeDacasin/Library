@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Book;
+use App\Utils\Helper;
 
 class BookService
 {
+
     public function __construct(protected Book $book)
     {
         
@@ -13,11 +15,20 @@ class BookService
 
     public function index($request)
     {
-        if ($request->search) {
-            return $this->book::where('title', 'LIKE', '%' .$request->search .'%')->paginate();
+      
+        $isArchive = Helper::toBoolean($request->isArchive);
+
+        $books = $this->book;
+
+        if ($isArchive) {
+            $books = $books->onlyTrashed();
         }
 
-        return $this->book::paginate(10);
+        if ($request->search) {
+            return $books = $books->where('title', 'LIKE', '%' .$request->search .'%')->paginate();
+        }
+
+        return $books = $books->paginate(10);
     }
 
     public function store($request)

@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BorrowedBook extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'request_date',
@@ -33,6 +34,14 @@ class BorrowedBook extends Model
     public function book()
     {
         return $this->belongsTo(Book::class);
+    }
+
+    public function scopeBookWithTrashed($query)
+    {
+        return $query->with(['book' => function($q) {
+                $q->withTrashed();
+            }
+        ]);
     }
 
     public function scopeSearch($query, $search) : Builder
