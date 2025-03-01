@@ -38,13 +38,8 @@ class BorrowedBookService
             'user_id'      => $id
         ]);
 
-        $newRequestBook = $this->borrowedBook::create($request->all());
-
-        if ($newRequestBook) {
-            $this->updateBook($book);
-        }
-        
-
+       
+        $this->borrowedBook::create($request->all());
     }
 
     public function update($request, $id)
@@ -53,7 +48,7 @@ class BorrowedBookService
         $borrowedBooks = $this->show($id);
 
         if (stristr($request->status, 'borrowed')) {
-            $request = $this->borrowBook($request);
+            $request = $this->borrowBook($request, $borrowedBooks);
         }
 
         if (stristr($request->status, 'returned')) {
@@ -83,9 +78,9 @@ class BorrowedBookService
                 $borrowedBooks = $borrowBooks->where(function($query) {
                     $query->whereNot('status', 'requested')
                     ->whereNot('status', 'borrowed');
-                }); 
+                })->bookWithTrashed(); 
             } else {
-                $borrowedBooks = $borrowBooks->where('status', $request->status);
+                $borrowedBooks = $borrowBooks->where('status', $request->status)->bookWithTrashed();
             }
             
         }
@@ -123,7 +118,7 @@ class BorrowedBookService
         return $now->format('Y-m-d');  
     }
 
-    private function borrowBook($request)
+    private function borrowBook($request, $id)
     {
         $dateWithoutWeekends = $this->calculateWeekendsDate();
 
@@ -131,6 +126,10 @@ class BorrowedBookService
             'must_return_date' => $dateWithoutWeekends, 
             'borrowed_date' => now()
         ]);
+
+        $book = $this->book::find($request->book_id);
+        
+        $this->updateBook($book);
         
         return $request;
         
@@ -138,7 +137,6 @@ class BorrowedBookService
 
     private function returnBook($request, $book)
     {
-
         if(!stristr($book, 'borrowed')) {
             throw new Exception('Books is not Borrowed right now', 409);
         }
@@ -169,6 +167,9 @@ class BorrowedBookService
 
             $period = CarbonPeriod::create($formattedDateMustReturn, $formatToday)->countWeekdays();
         }
+
+        $this->book::where('id', $book->book_id)
+            ->increment('remaining');
 
         $request->merge([
             'returned_date' => $now, 
