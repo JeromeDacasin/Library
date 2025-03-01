@@ -64,4 +64,11 @@ class User extends Authenticatable
         });
         
     }
+
+    public function scopeIsGenerated($query) : Builder
+    {
+        return $query->whereHas('userInformation', function ($builder)  {
+            $builder->where('is_generated_student_number', 1);
+        });
+    }
 }
