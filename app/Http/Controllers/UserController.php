@@ -34,6 +34,7 @@ class UserController extends Controller
 
     public function store(UserCreateRequest $request)
     {
+        
         DB::beginTransaction();
         try {
             $data = $this->userApi->store($request);

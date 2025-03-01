@@ -24,9 +24,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => '/v1'], function() {
     
-    Route::apiResource('/users', UserController::class);
     Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::apiResource('/departments', DepartmentController::class);
+        Route::apiResource('/users', UserController::class);
         Route::apiResource('/roles', RoleController::class);
         Route::apiResource('/authors', AuthorController::class);
         Route::apiResource('/books', BookController::class);

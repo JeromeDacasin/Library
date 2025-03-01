@@ -20,17 +20,20 @@ class UserService
     }
 
     public function store($request)     
-    {
-        $username = $this->generateUsername($request);
+    {   
+        $role = roles($request->role_id);
+
+        $username = stristr($role, 'student') ? $this->studentUsername($request) : $this->generateUserName($request);
         $this->checkForExistingUserName($username);
+
         $password = $this->generatePassword();
 
         $user = $this->user::create([
-            'username' => $username,
+            'username' => $request->role_id === 2 ? ($request->student_number ?? $username) : null,
             'password' => $password->hashedPassword,
             'role_id'  => $request->role_id
         ]); 
-
+        
 
         if (!$user) {
             throw new Exception('Something went Wrong', 400);
@@ -89,21 +92,20 @@ class UserService
 
     public function generateUsername($request) : string
     {
-        $latestUser = $this->user::latest()->first();
-        $id = $latestUser ? $latestUser->id + 1 : 1;
-        $username = '';
+        return $request->first_name . $request->last_name;
+    }
 
-        $roles = roles($request->role_id);
+    public function generateStudentNumber() : string
+    {   
+        $latestUser = $this->user::isGenerated()->latest()->first();
+        $username = $latestUser->username;
         
-        if (stristr($roles, 'student')) {
-            $username = now()->format('y') . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
-        
-            return $username;
-        }
 
-        $username = $request->first_name . $request->last_name;
+        $newUsername = explode('-', $username)[1] + 1;
 
-        return $username;
+        $generatedUsername = now()->format('y') . '-' . str_pad($newUsername, 5, '0', STR_PAD_LEFT);
+
+        return $generatedUsername;
     }
 
     public function generatePassword() : object
@@ -181,8 +183,15 @@ class UserService
         $user = $user->save();
 
         return $user;
+    }
 
-        
+    private function studentUsername($request) : string 
+    {
+        $username =  empty($request->student_number)
+            ? $this->generateStudentNumber()
+            : $request->student_number;
+
+        return $username;
     }
 
 
