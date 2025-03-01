@@ -118,7 +118,7 @@ class BorrowedBookService
         return $now->format('Y-m-d');  
     }
 
-    private function borrowBook($request, $id)
+    private function borrowBook($request, $borrowBooks)
     {
         $dateWithoutWeekends = $this->calculateWeekendsDate();
 
@@ -127,8 +127,8 @@ class BorrowedBookService
             'borrowed_date' => now()
         ]);
 
-        $book = $this->book::find($request->book_id);
-        
+        $book = $this->book::find($borrowBooks->book_id);
+   
         $this->updateBook($book);
         
         return $request;
