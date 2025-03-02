@@ -45,6 +45,7 @@ class UserService
             'birth_date' => $request->birth_date,
             'gender'     => $request->gender,
             'email'      => $request->email,
+            'is_generated_student_number' => $request->is_generated_student_number,
             'contact_number' => $request->contact_number,
             'student_number' => $request->role_id === 2 ? ($request->student_number ?? $username) : null,
             'user_id'        => $user->id
@@ -190,7 +191,7 @@ class UserService
         $username =  empty($request->student_number)
             ? $this->generateStudentNumber()
             : $request->student_number;
-
+       
         return $username;
     }
 
