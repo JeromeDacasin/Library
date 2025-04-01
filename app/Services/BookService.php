@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Book;
 use App\Utils\Helper;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookService
 {
@@ -55,5 +57,32 @@ class BookService
         $book->update($request->except(['author', 'department']));
         
         return $book;
+    }
+
+    public function restore($id)
+    {
+        try {
+            $book = $this->book::withTrashed()->find($id);
+            if (!$book) {
+                throw new Exception('book not found', 404);
+            } 
+    
+           $book->restore();
+
+           return response()->json([
+            'status'  => 200,
+            'message' => 'Book Successfully Retrieved'
+        ], 200);
+
+        } catch(ModelNotFoundException $e) {
+            return response()
+            ->json([
+                'status_code' => 404,
+                'message'     => 'Unable to find requested data'
+            ], 404);
+        }
+
+
+      
     }
 }

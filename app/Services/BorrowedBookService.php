@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Exports\BookBorrowedExport;
+use App\Http\Resources\BorrowedBookCollection;
+use App\Http\Resources\BorrowedBookResource;
 use App\Models\Book;
 use App\Models\BorrowedBook;
 use App\Models\Penalty;
@@ -11,6 +14,7 @@ use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BorrowedBookService 
 {
@@ -85,8 +89,14 @@ class BorrowedBookService
             
         }
 
+        if ($request->export) {
+            $bookExport = $borrowedBooks->get();
+            $bookExports = new BorrowedBookCollection($bookExport);
+            return Excel::download(new BookBorrowedExport($bookExports->toArray(request())), 'History.csv');
+        }
+
         if ($request->search) {
-            $borrowBooks = $borrowBooks->search($search);
+            $borrowedBooks = $borrowBooks->search($search);
         }
 
         return $borrowedBooks->paginate(10);

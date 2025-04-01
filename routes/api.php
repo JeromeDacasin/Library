@@ -29,10 +29,13 @@ Route::group(['prefix' => '/v1'], function() {
         Route::apiResource('/users', UserController::class);
         Route::apiResource('/roles', RoleController::class);
         Route::apiResource('/authors', AuthorController::class);
+        Route::patch('/books/{id}/restore', [BookController::class, 'restore']);
         Route::apiResource('/books', BookController::class);
         Route::apiResource('/publishers', PublisherController::class);
         Route::apiResource('/penalties', PenaltyController::class);
         Route::apiResource('/request-books', BorrowedBookController::class);
+
+        Route::get('/exports', [BorrowedBookController::class, 'exports']);
         Route::get('/my-books', [BorrowedBookController::class, 'myBooks']);
         Route::post('/logout',  [UserController::class, 'logout']);
         Route::put('user/password', [UserController::class, 'changePassword']);

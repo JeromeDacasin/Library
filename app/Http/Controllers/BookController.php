@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Services\BookService;
+use Illuminate\Support\Facades\Request;
 
 class BookController extends APIBaseController
 {
@@ -13,4 +14,8 @@ class BookController extends APIBaseController
         parent::__construct($api, BookResource::class, BookCollection::class);
     }
 
+    public function restore($id)
+    {
+        return $this->api->restore($id);
+    }
 }
