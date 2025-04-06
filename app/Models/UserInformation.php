@@ -20,6 +20,7 @@ class UserInformation extends Model
         'contact_number',
         'student_number',
         'user_id',
+        'is_generated_student_number',
     ];
 
     public function user()
