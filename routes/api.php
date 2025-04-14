@@ -6,6 +6,7 @@ use App\Http\Controllers\BorrowedBookController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PenaltyController;
 use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\Reports\UserHistoryController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,10 @@ Route::group(['prefix' => '/v1'], function() {
         Route::get('/my-books', [BorrowedBookController::class, 'myBooks']);
         Route::post('/logout',  [UserController::class, 'logout']);
         Route::put('user/password', [UserController::class, 'changePassword']);
+
+        Route::group(['prefix' => '/histories'], function () {
+            Route::get('/{id}', [UserHistoryController::class, 'userHistory']);
+        });
 
     });
     Route::post('/login',  [UserController::class, 'login']);
