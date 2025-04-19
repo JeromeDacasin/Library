@@ -22,6 +22,7 @@ class BookResource extends JsonResource
             'total_quantity'   => $this->total_quantity,
             'remaining'        => $this->remaining,
             'acquired_via'     => $this->acquired_via,
+            'acquisition_id'   => $this->acquisition_id,
             'is_active'        => $this->is_active,
             'author_id'        => $this->author_id,
             'department_id'    => $this->department_id

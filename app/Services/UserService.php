@@ -74,6 +74,7 @@ class UserService
             'token' => $token,
             'cookie' => $cookie,
             'role'   => $user->role->name,
+            'gender' => $user->userInformation->gender,
             'full_name' => ucwords($user->userInformation->first_name . ' ' . $user->userInformation->last_name)
             
         ];

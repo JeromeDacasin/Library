@@ -30,7 +30,6 @@ class BookFactory extends Factory
             'author_id'         => Author::inRandomOrder()->first(),
             'department_id'     => Department::inRandomOrder()->first(),
             'publisher_id'      => Publisher::inRandomOrder()->first(),
-
         ];
     }
 }

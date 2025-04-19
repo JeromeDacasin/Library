@@ -7,6 +7,7 @@ use App\Http\Resources\BorrowedBookCollection;
 use App\Http\Resources\BorrowedBookResource;
 use App\Models\Book;
 use App\Models\BorrowedBook;
+use App\Models\BorrowedLimit;
 use App\Models\Penalty;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,11 +32,25 @@ class BorrowedBookService
 
     public function store($request) 
     {
+        $id = Auth::user()->id;
+        $now = now();
+
+        $getStatusOfUser = $this->borrowedBook::where('status', 'borrowed')
+            ->where('user_id', $id)
+            ->where('must_return_date', '<', $now)->first();
+
+        $this->checkAllowableBookPerRole($id);
+
+        if ($getStatusOfUser) {
+            $message = 'You have an unpaid fine. Please settle your balance to continue borrowing books.';
+            throw new Exception($message, 400);
+        }
+        
         $book = $this->book::find($request->book_id);
 
         $this->checkBook($book);
 
-        $id = Auth::user()->id;
+       
         
         $request->merge([
             'request_date' => now(),
@@ -230,6 +245,20 @@ class BorrowedBookService
         $book->update([
             'remaining' => $book->remaining - 1
         ]);
+    }
+
+    private function checkAllowableBookPerRole($id)
+    {
+        $role = Auth::user()->role_id;
+    
+        $limitPerRole = BorrowedLimit::where('role_id', $role)
+            ->value('number');
+        
+        $borrowed = $this->borrowedBook::whereIn('status', ['requested', 'borrowed'])->where('user_id', $id)->count();
+        
+        if ($borrowed >= $limitPerRole) {
+            throw new Exception('It seems you have borrowed / requested the maximum number of books allowed.');
+        } 
     }
 
     

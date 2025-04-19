@@ -58,4 +58,9 @@ class BorrowedBook extends Model
             });
         });
     }
+
+    public function scopeStatus($query, $value): Builder
+    {
+        return $query->where('status', $value);
+    }
 }
