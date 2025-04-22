@@ -21,4 +21,26 @@ class Book extends Model
     {
         return $this->belongsTo(Department::class)->withTrashed();
     }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->whereAny([
+                    'id',
+                    'acquisition_id',
+                    'edition',
+                    'title'
+                ], 'LIKE',  $search . '%');
+
+     
+            $q->orWhereHas('department', function($q) use($search) {
+                $q->where('name', 'LIKE', $search .'%');
+            });
+
+            $q->orWhereHas('author', function($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                ->orWhere('last_name', 'LIKE', "%{$search}%");
+            });
+        });
+    }
 }

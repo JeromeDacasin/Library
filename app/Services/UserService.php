@@ -123,8 +123,12 @@ class UserService
 
     public function index($request)
     {
-        $user = $this->user->query();
-
+        $user = $this->user->query()
+            ->join('user_informations', 'users.id', '=', 'user_informations.user_id')
+            ->select('users.*')
+            ->with('userInformation')
+            ->orderBy('user_informations.last_name');
+        
         $user = $user->where('role_id', $request->role_id);
         
         $search  = $request->search;

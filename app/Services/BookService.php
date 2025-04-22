@@ -20,17 +20,17 @@ class BookService
       
         $isArchive = Helper::toBoolean($request->isArchive);
 
-        $books = $this->book;
+        $books = $this->book->query();
 
         if ($isArchive) {
             $books = $books->onlyTrashed();
         }
 
         if ($request->search) {
-            return $books = $books->where('title', 'LIKE', '%' .$request->search .'%')->paginate();
+            return $books = $books->search($request->search)->orderBy('title')->paginate(10);
         }
 
-        return $books = $books->paginate(10);
+        return $books = $books->orderBy('title')->paginate(10);
     }
 
     public function store($request)
