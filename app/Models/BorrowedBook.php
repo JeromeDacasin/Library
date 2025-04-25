@@ -19,7 +19,8 @@ class BorrowedBook extends Model
         'total_penalty',
         'status',
         'book_id',
-        'user_id'
+        'user_id',
+        'reason'
     ];
 
     protected $casts = [

@@ -17,7 +17,9 @@ class DepartmentService
             return $this->department::where('name', 'LIKE', '%' .$request->search .'%')->paginate(10);
         }
 
-        return $request->paginate ? $this->department::paginate(10) : $this->department->get();   
+        $departments = $this->department::orderBy('name');
+
+        return $request->paginate ? $departments->paginate(10) : $departments->get();   
     }
 
     public function store($request)

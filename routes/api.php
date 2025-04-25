@@ -6,6 +6,7 @@ use App\Http\Controllers\BookImportController;
 use App\Http\Controllers\BorrowedBookController;
 use App\Http\Controllers\BorrowedLimitController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HelperController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ImportController;
@@ -66,6 +67,7 @@ Route::group(['prefix' => '/v1'], function() {
     
    
     Route::post('/login',  [UserController::class, 'login']);
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetEmail']);
 });
 
 

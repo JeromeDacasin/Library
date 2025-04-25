@@ -18,7 +18,9 @@ class PublisherService
             return $this->publisher::where('name', 'LIKE', '%' .$request->search .'%')->paginate(10);
         }
 
-        return $request->paginate ? $this->publisher::paginate(10) : $this->publisher->get();   
+        $publishers = $this->publisher::orderBy('name');
+
+        return $request->paginate ? $publishers->paginate(10) : $publishers->get();   
     }
 
     public function store($request)

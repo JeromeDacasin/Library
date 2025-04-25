@@ -17,7 +17,10 @@ class AuthorService
             return $this->author::whereAny(['first_name', 'last_name'], 'LIKE', '%' . $request->search .'%')->paginate(10);
         }
 
-        return $request->paginate ? $this->author::paginate(10) : $this->author->get();   
+        $author = $this->author::orderBy('last_name', 'asc') 
+            ->orderBy('first_name', 'asc');
+
+        return $request->paginate ? $author->paginate(10) : $author->get();   
     }
 
     public function store($request)

@@ -114,7 +114,7 @@ class BorrowedBookService
             $borrowedBooks = $borrowBooks->search($search);
         }
 
-        return $borrowedBooks->paginate(10);
+        return $borrowedBooks->orderBy('request_date', 'desc')->paginate(10);
     }
 
     public function delete($id)
@@ -195,13 +195,13 @@ class BorrowedBookService
 
         $this->book::where('id', $book->book_id)
             ->increment('remaining');
-
+        
         $request->merge([
             'returned_date' => $now, 
             'total_penalty' => $period * $penalty->fine
 
         ]);
-
+        dd('dsadsa');
         return $request;
         
     }
@@ -219,7 +219,9 @@ class BorrowedBookService
                 'bb.status',
                 'bb.must_return_date',
                 'bb.returned_date',
-                'bb.request_date'
+                'bb.request_date',
+                'bb.reason',
+                'bb.total_penalty'
             )
             ->orderBy('bb.status')
             ->get();

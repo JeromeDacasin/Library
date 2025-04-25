@@ -22,7 +22,9 @@ class RoleService
             return $this->role::where('name', 'LIKE', '%' .$request->search .'%')->paginate(10);
         }
 
-        return $request->paginate ? $this->role::paginate(10) : $this->role->get();   
+        $roles = $this->role::orderBy('name');
+
+        return $request->paginate ? $roles->paginate(10) : $roles->get();   
     }
 
     public function show($id)
