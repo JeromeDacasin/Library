@@ -16,26 +16,20 @@ class ForgotPasswordService
 {
     public function sendResetEmail($request)
     {
-        $userInfo = UserInformation::where('email', $request->email)->first();
+        $userInfo = User::searchUsernameOrEmail($request->username)->first();
 
         if (!$userInfo) {
-            throw new Exception('Email does not exist', 404);
-        }
-
-        $user = User::find($userInfo->user_id);
-
-        if (!$user) {
-            throw new Exception('No user found', 404);
+            throw new Exception('Email or Username does not exist', 404);
         }
 
         $newPassword = Str::random(10);
 
-        $user->update([
+        $userInfo->update([
             'password' => Hash::make($newPassword)
         ]);
      
         Mail::to($userInfo->email)
-            ->send(new ForgotPasswordMail($newPassword, $userInfo->email));
+            ->send(new ForgotPasswordMail($newPassword, $userInfo->userInformation->email));
             
         return true;
         

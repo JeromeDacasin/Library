@@ -71,4 +71,14 @@ class User extends Authenticatable
             $builder->where('is_generated_student_number', 1);
         });
     }
+
+    public function scopeSearchUsernameOrEmail($query, $search): Builder
+    {
+        return $query->where(function($builder) use ($search) {
+            $builder->orWhere('username', 'LIKE', '%' . $search . '%')
+                ->orWhereHas('userInformation', function ($q) use ($search) {
+                    $q->where('email', 'LIKE', '%' . $search . '%');
+                });
+        }); 
+    }
 }

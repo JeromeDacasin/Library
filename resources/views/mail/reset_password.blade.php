@@ -4,7 +4,7 @@
     <title>Password Reset</title>
 </head>
 <body>
-    <h1>Password Reset Request</h1>
-    <p>Your password reset token is: <strong>{{ $token }}</strong></p>
+    <h2>Password Reset Request</h2>
+    <p>Your password is: <strong>{{ $token }}</strong></p>
 </body>
 </html>

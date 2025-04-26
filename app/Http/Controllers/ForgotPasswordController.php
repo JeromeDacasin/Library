@@ -18,7 +18,7 @@ class ForgotPasswordController extends Controller
         try {
             $this->service->sendResetEmail($request);
             return response()->json([
-                'message' => 'successfully reset',
+                'message' => 'A new password has been sent to your email address.',
                 'code'    => 200
             ], 200);
 
