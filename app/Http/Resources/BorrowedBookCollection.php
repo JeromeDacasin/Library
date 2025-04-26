@@ -21,6 +21,8 @@ class BorrowedBookCollection extends ResourceCollection
                 'id'     => $borrowedBook->id,
                 'user'   => $borrowedBook->user->userInformation->first_name . ' ' . $borrowedBook->user->userInformation->last_name,
                 'book'   => $borrowedBook->book->title,
+                'student_id' => $borrowedBook->user->userInformation->student_number,
+                'personnel' => $borrowedBook->user->role->name,     
                 'status' => $borrowedBook->status,
                 'request_date' => $borrowedBook->request_date->format('Y-m-d'),
                 'borrowed_date' => formatNullableDate($borrowedBook->borrowed_date),

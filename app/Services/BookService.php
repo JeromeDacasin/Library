@@ -81,8 +81,16 @@ class BookService
                 'message'     => 'Unable to find requested data'
             ], 404);
         }
+    }
 
+    public function archive($request, $id) 
+    {
+        $book = $this->show($id);
+        
+        $book->update([
+            'reason' => $request->reason
+        ]);
 
-      
+        return $book->delete();
     }
 }

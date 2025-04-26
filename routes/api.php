@@ -44,6 +44,7 @@ Route::group(['prefix' => '/v1'], function() {
         Route::apiResource('/borrow-limits', BorrowedLimitController::class);
         Route::apiResource('/penalties', PenaltyController::class);
         Route::apiResource('/request-books', BorrowedBookController::class);
+        Route::patch('/books/{id}/archive', [BookController::class, 'archive']);
 
         Route::get('role-checkers', [HelperController::class, 'roleChecker']);
         Route::get('/exports', [BorrowedBookController::class, 'exports']);

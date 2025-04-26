@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Services\BookService;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class BookController extends APIBaseController
 {
@@ -17,5 +17,15 @@ class BookController extends APIBaseController
     public function restore($id)
     {
         return $this->api->restore($id);
+    }
+
+    public function archive(Request $request, $id)
+    {
+        $this->api->archive($request, $id);
+
+        return response()->json([
+            'message' => 'Archived Successfully',
+            'status' => 200
+        ], 200);
     }
 }
