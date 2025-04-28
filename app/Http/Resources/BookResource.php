@@ -25,7 +25,8 @@ class BookResource extends JsonResource
             'acquisition_id'   => $this->acquisition_id,
             'is_active'        => $this->is_active,
             'author_id'        => $this->author_id,
-            'department_id'    => $this->department_id
+            'department_id'    => $this->department_id,
+            'copyright_date'   => $this->copyright_date
         ];
     }
 }

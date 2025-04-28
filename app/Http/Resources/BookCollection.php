@@ -27,7 +27,8 @@ class BookCollection extends ResourceCollection
                 'acquisition_id'   => $book->acquisition_id,    
                 'department'       => $book->department->name,
                 'is_active'        => $book->is_active,
-                'reason'           => $book->reason
+                'reason'           => $book->reason,
+                'copyright_date'   => $book->copyright_date,
             ]
        )->all();
           

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Role;
+use App\Models\User;
+use Exception;
 
 class RoleService
 {
@@ -45,6 +47,13 @@ class RoleService
     {
         $role = $this->show($id);
 
+        $userRole = User::where('role_id', $role->id)->first();
+
+
+        if ($userRole) {
+            throw new Exception('Opps! you cannot remove a Role that is being used by a User', 400);
+        }
+    
         return $role->delete();
  
     }

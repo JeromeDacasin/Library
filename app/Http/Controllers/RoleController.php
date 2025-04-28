@@ -24,7 +24,11 @@ class RoleController extends Controller
             
             $data = $this->roleApi->store($request);
 
-            return new RoleResource($data);
+            return response()->json([
+                'data' => new RoleResource($data),
+                'message' => 'successfully created',
+                'status' => 200,
+            ], 200);
 
         } catch (Exception $e) {
 

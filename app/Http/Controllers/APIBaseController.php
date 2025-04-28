@@ -96,6 +96,12 @@ class APIBaseController extends Controller implements APIInterface
                 'status_code' => 404,
                 'message'     => 'Unable to find requested data'
             ], 404);
+        }  catch(Exception $e) {
+            return response()
+            ->json([
+                'status_code' => $e->getCode(),
+                'message'     => $e->getMessage()
+            ], $e->getCode());
         }
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookImportController;
+use App\Http\Controllers\BookMustReturnController;
 use App\Http\Controllers\BorrowedBookController;
 use App\Http\Controllers\BorrowedLimitController;
 use App\Http\Controllers\DepartmentController;
@@ -45,6 +46,7 @@ Route::group(['prefix' => '/v1'], function() {
         Route::apiResource('/penalties', PenaltyController::class);
         Route::apiResource('/request-books', BorrowedBookController::class);
         Route::patch('/books/{id}/archive', [BookController::class, 'archive']);
+        Route::apiResource('/return-dates', BookMustReturnController::class);
 
         Route::get('role-checkers', [HelperController::class, 'roleChecker']);
         Route::get('/exports', [BorrowedBookController::class, 'exports']);

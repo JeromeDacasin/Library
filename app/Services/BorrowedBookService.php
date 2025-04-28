@@ -6,6 +6,7 @@ use App\Exports\BookBorrowedExport;
 use App\Http\Resources\BorrowedBookCollection;
 use App\Http\Resources\BorrowedBookResource;
 use App\Models\Book;
+use App\Models\BookMustReturn;
 use App\Models\BorrowedBook;
 use App\Models\BorrowedLimit;
 use App\Models\Penalty;
@@ -126,7 +127,8 @@ class BorrowedBookService
 
     private function calculateWeekendsDate()
     {
-        $daysToMustReturn = 7;
+     
+        (int) $daysToMustReturn = BookMustReturn::where('id', 1)->first()->value('days');
         $now = now();
 
         $addedDays = 0;
@@ -201,7 +203,7 @@ class BorrowedBookService
             'total_penalty' => $period * $penalty->fine
 
         ]);
-        dd('dsadsa');
+
         return $request;
         
     }
