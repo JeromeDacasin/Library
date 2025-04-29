@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\ValidatePassword;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Services\UserApi;
@@ -13,6 +14,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -131,7 +133,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ValidatePassword $request)
     {
         try {
 

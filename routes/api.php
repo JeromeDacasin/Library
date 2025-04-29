@@ -60,6 +60,7 @@ Route::group(['prefix' => '/v1'], function() {
 
         Route::group(['prefix' => '/dashboards'], function() {
             Route::get('/', [DashboardController::class, 'dashboardData']);
+            Route::get('/borrowers', [DashboardController::class, 'borrower']);
         });
 
         Route::group(['prefix' => 'imports'], function () {

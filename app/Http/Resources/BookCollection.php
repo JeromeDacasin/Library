@@ -30,7 +30,7 @@ class BookCollection extends ResourceCollection
                 'reason'           => $book->reason,
                 'copyright_date'   => $book->copyright_date,
             ]
-       )->all();
+        )->all();
           
     }
 }

@@ -17,4 +17,9 @@ class DashboardController extends Controller
     {
         return $this->dashboardService->dashboardData();
     }
+
+    public function borrower(Request $request)
+    {
+        return $this->dashboardService->borrower($request);
+    }
 }

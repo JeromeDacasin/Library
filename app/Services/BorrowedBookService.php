@@ -47,9 +47,9 @@ class BorrowedBookService
             throw new Exception($message, 400);
         }
         
-        $book = $this->book::find($request->book_id);
+        // $book = $this->book::find($request->book_id);
 
-        $this->checkBook($book);
+        // $this->checkBook($book);
 
        
         

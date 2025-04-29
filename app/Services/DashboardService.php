@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\BorrowerCollection;
 use App\Models\BorrowedBook;
 
 class DashboardService
@@ -58,7 +59,24 @@ class DashboardService
             COUNT(CASE WHEN status = 'returned' AND YEAR(returned_date) = ? THEN 1 END) as returned
         ", [$year, $year, $year])
         ->first();
-        // COUNT(CASE WHEN status = 'borrowed' AND YEAR(must_return_date) = ? THEN 1 END) as due_today
+    }
+
+    public function borrower($request)
+    {
+        $result = $this->borrowedBook::where('status', 'borrowed')
+            ->whereBetween('borrowed_date', [$request->from . ' 00:00:00', $request->to . ' 23:59:59'])
+            ->selectRaw('
+                user_id,
+                count(id) as total,
+                sum(IFNULL(total_penalty, 0)) as total_penalty
+                '
+            )
+            ->groupBy('user_id')
+            ->orderBy('total', 'desc')
+            ->orderBy('total_penalty', 'desc')
+            ->paginate(10);
+            
+        return new BorrowerCollection($result);
     }
     
 }
